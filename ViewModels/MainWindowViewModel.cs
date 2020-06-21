@@ -1,61 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Windows.Controls;
-using BaseProject.Helpers;
-using BaseProject.InterFaces;
+﻿using BaseProject.InterFaces;
+using BaseProject.Services;
+using BaseProject.Services.Contracts;
+using BaseProject.Views;
+using System;
 
 namespace BaseProject.ViewModels
 {
-    public class MainWindowViewModel:BaseViewModel
+    public class MainWindowViewModel : BaseViewModel, IWpfOnInit
     {
+        private readonly INavigationService _navigationService;
 
         public MainWindowViewModel()
         {
-            NavCommand = new RelayCommand<string>(OnNavigation);
-        }
-        private IDictionary<string, IViewNavigation> Navigators { get; set; }
-
-        private INavigation _currentViewModel;
-        public INavigation CurrentViewModel
-        {
-            get => _currentViewModel;
-            set => SetProperty(ref _currentViewModel, value);
+            _navigationService = EngineContext.Resolve<INavigationService>();
+            Navigate = new RelayCommand<string>(OnNavigate, OnCanNavigate);
+            OnInit();
         }
 
-        private List<IViewNavigation> _iViewNavigators;
-
-        public List<IViewNavigation> IViewNavigators
+        public void OnInit()
         {
-            get => _iViewNavigators;
-            set => SetProperty(ref _iViewNavigators, value);
+            _navigationService.WhenViewChanges.Subscribe(OnNavigated);
         }
 
-        public RelayCommand<string> NavCommand { get; }
+        public RelayCommand<string> Navigate { get; protected set; }
 
 
 
-        public void OnNavigation(string type)
+        protected virtual void OnNavigated(INavigationView view)
         {
-            type = type.ToListViewItemName();
-            if (Navigators != null && Navigators.ContainsKey(type))
-                CurrentViewModel = Navigators[type];
+            NavigatedView = view;
+            Navigate.RaiseCanExecuteChanged();
+        }
+
+        private INavigationView _navigatedView;
+
+        public INavigationView NavigatedView
+        {
+            get => _navigatedView;
+            set => SetProperty(ref _navigatedView, value);
+        }
+
+        protected virtual void OnNavigate(string viewName)
+        {
+            _navigationService.Navigate(viewName);
+
+        }
+
+        protected virtual bool OnCanNavigate(string viewName)
+        {
+            return _navigationService.CurrentView == null || _navigationService.CurrentView.Name != viewName;
         }
 
         public void OnLoad()
         {
-
-            IViewNavigators = GetType().GetTypeInfo().Assembly.DefinedTypes
-                .Where(x => x.ImplementedInterfaces.Any(type => type == typeof(IViewNavigation)))
-                .Where(x => x.Name != "SignInViewModel")
-                .Select(x => Activator.CreateInstance(x) as IViewNavigation).ToList();
-
-            Navigators = IViewNavigators.ToDictionary(x => string.Join("_", x.RouteName.Split(' ')), x => x);
-
-            CurrentViewModel = new HomeViewModel();
-
+            _navigationService.Navigate(nameof(HomeView));
         }
     }
 }

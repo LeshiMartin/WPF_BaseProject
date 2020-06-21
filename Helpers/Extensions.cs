@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BaseProject.Helpers
 {
@@ -14,6 +15,16 @@ namespace BaseProject.Helpers
             }
 
             return enumerable;
+        }
+
+        public static string ToViewName(this string ViewModelName)
+        {
+            return Regex.Replace(ViewModelName, "ViewModel", "View");
+        }
+
+        public static string ToViewModelName(this string ViewName)
+        {
+            return Regex.Replace(ViewName, "View", "ViewModel");
         }
 
         public static string ToListViewItemName(this string routeName)

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Input;
 
 namespace BaseProject.InterFaces
 {
@@ -9,8 +10,12 @@ namespace BaseProject.InterFaces
     {
         string RouteName { get; }
     }
-    public interface IViewNavigation : INavigation
+    public interface IViewNavigation : INavigation, IInterface
     {
         PackIconKind Icon { get; }
+        RelayCommand OnNavigation { get; }
+        void Navigate();
+        bool CanNavigate();
+
     }
 }

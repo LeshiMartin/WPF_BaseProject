@@ -2,9 +2,7 @@
 using Autofac.Core;
 using BaseProject.InterFaces;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace BaseProject.Services
 {

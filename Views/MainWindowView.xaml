@@ -10,14 +10,6 @@
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Window.Resources>
-        <DataTemplate DataType="{x:Type vms:HomeViewModel}">
-            <views:HomeView></views:HomeView>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vms:OtherViewModel}">
-            <views:OtherView></views:OtherView>
-        </DataTemplate>
-    </Window.Resources>
     <Window.DataContext>
         <vms:MainWindowViewModel></vms:MainWindowViewModel>
     </Window.DataContext>
@@ -36,31 +28,31 @@
 
         <!-- Row 0 -->
         <StackPanel Background="{StaticResource BgPrimary}" Orientation="Horizontal">
-            <Button Height="Auto" Width="60" Margin="5"
+            <Button Height="Auto" Width="Auto" Margin="5"
                     HorizontalAlignment="Right" 
                     VerticalAlignment="Center"
                     Background="{x:Null}" 
                     BorderBrush="{x:Null}" 
                     Foreground="{StaticResource TextLight}"
                 Content="Home View"
-                Command="{Binding NavCommand}"
-                CommandParameter="Home View"
-                Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"></Button>
-            <Button Height="Auto" Width="60" Margin="5"
+                Command="{Binding Navigate}"
+                CommandParameter="HomeView"
+                Style="{StaticResource MaterialDesignRaisedLightButton}"></Button>
+            <Button Height="Auto" Width="Auto" Margin="5"
                     HorizontalAlignment="Right" 
                     VerticalAlignment="Center"
                     Background="{x:Null}" 
                     BorderBrush="{x:Null}" 
                     Foreground="{StaticResource TextLight}"
                     Content="Other View"
-                    Command="{Binding NavCommand}"
-                    CommandParameter="Other View"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"></Button>
+                    Command="{Binding Navigate}"
+                    CommandParameter="OtherView"
+                    Style="{StaticResource MaterialDesignRaisedLightButton}"></Button>
         </StackPanel>
         
         <!-- Row 1-->
         <Grid Row="1">
-            <ContentControl Content="{Binding CurrentViewModel, Mode=OneWay}"></ContentControl>
+            <ContentControl Content="{Binding NavigatedView, Mode=OneWay}"></ContentControl>
         </Grid>
     </Grid>
 </Window>
